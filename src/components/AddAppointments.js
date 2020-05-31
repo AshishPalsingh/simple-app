@@ -2,6 +2,46 @@ import React, { Component } from "react";
 import { FaPlus } from "react-icons/fa";
 
 class AddAppointments extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      petName: "",
+      ownerName: "",
+      aptNotes: "",
+      aptDate: "",
+      aptTime: "",
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.addRecord = this.addRecord.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  addRecord(e) {
+    e.preventDefault();
+
+    let tempRecord = {
+      petName: this.state.petName,
+      ownerName: this.state.ownerName,
+      aptNotes: this.state.aptNotes,
+      aptDate: this.state.aptDate + " " + this.state.aptTime,
+    };
+
+    this.props.addNewRecord(tempRecord);
+    this.props.toggleForm();
+
+    this.setState({
+      petName: "",
+      ownerName: "",
+      aptNotes: "",
+      aptDate: "",
+    });
+  }
   render() {
     return (
       <div
@@ -18,7 +58,7 @@ class AddAppointments extends Component {
         </div>
 
         <div className="card-body">
-          <form id="aptForm" noValidate>
+          <form id="aptForm" noValidate onSubmit={this.addRecord}>
             <div className="form-group form-row">
               <label
                 className="col-md-2 col-form-label text-md-right"
@@ -32,6 +72,8 @@ class AddAppointments extends Component {
                   type="text"
                   className="form-control"
                   name="petName"
+                  value={this.state.petName}
+                  onChange={this.handleChange}
                   placeholder="Pet's Name"
                 />
               </div>
@@ -49,6 +91,8 @@ class AddAppointments extends Component {
                   type="text"
                   className="form-control"
                   name="ownerName"
+                  value={this.state.ownerName}
+                  onChange={this.handleChange}
                   placeholder="Owner's Name"
                 />
               </div>
@@ -66,6 +110,8 @@ class AddAppointments extends Component {
                   type="date"
                   className="form-control"
                   name="aptDate"
+                  value={this.state.aptDate}
+                  onChange={this.handleChange}
                   id="aptDate"
                 />
               </div>
@@ -80,6 +126,8 @@ class AddAppointments extends Component {
                   type="time"
                   className="form-control"
                   name="aptTime"
+                  value={this.state.aptTime}
+                  onChange={this.handleChange}
                   id="aptTime"
                 />
               </div>
@@ -95,6 +143,8 @@ class AddAppointments extends Component {
                   rows="4"
                   cols="50"
                   name="aptNotes"
+                  value={this.state.aptNotes}
+                  onChange={this.handleChange}
                   id="aptNotes"
                   placeholder="Appointment Notes"
                 />

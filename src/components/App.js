@@ -18,6 +18,7 @@ class App extends Component {
     };
     this.deleteItem = this.deleteItem.bind(this);
     this.toggleFormDisplay = this.toggleFormDisplay.bind(this);
+    this.addNewRecord = this.addNewRecord.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +46,16 @@ class App extends Component {
       formDisplay: !this.state.formDisplay,
     });
   }
+  addNewRecord(newRecord) {
+    let newData = this.state.data;
+    newRecord.ID = this.state.index;
+
+    newData.unshift(newRecord);
+    this.setState({
+      index: this.state.index + 1,
+      data: newData,
+    });
+  }
 
   render() {
     return (
@@ -56,6 +67,7 @@ class App extends Component {
                 <AddAppointments
                   formDisplay={this.state.formDisplay}
                   toggleForm={this.toggleFormDisplay}
+                  addNewRecord={this.addNewRecord}
                 />
 
                 <ListAppointments

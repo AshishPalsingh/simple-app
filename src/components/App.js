@@ -4,7 +4,7 @@ import "../css/App.css";
 import AddAppointments from "./AddAppointments.js";
 import ListAppointments from "./ListAppointments.js";
 import SearchAppointments from "./SearchAppointments.js";
-import { without } from "lodash";
+import { findIndex, without } from "lodash";
 
 class App extends Component {
   constructor() {
@@ -12,6 +12,7 @@ class App extends Component {
 
     this.state = {
       name: "Ashish",
+      query: "",
       orderBy: "petName",
       orderDir: "desc",
       index: 0,
@@ -22,6 +23,8 @@ class App extends Component {
     this.toggleFormDisplay = this.toggleFormDisplay.bind(this);
     this.addNewRecord = this.addNewRecord.bind(this);
     this.changeOrder = this.changeOrder.bind(this);
+    this.searchRecord = this.searchRecord.bind(this);
+    this.updateInfo = this.updateInfo.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +70,24 @@ class App extends Component {
     });
   }
 
+  searchRecord(queryString) {
+    this.setState({
+      query: queryString,
+    });
+  }
+
+  updateInfo(name, value, id) {
+    let tempRecords = this.state.data;
+    let dataIndex = findIndex(this.state.data, {
+      ID: id,
+    });
+
+    tempRecords[dataIndex][name] = value;
+    this.setState({
+      data: tempRecords,
+    });
+  }
+
   render() {
     let order;
     let filterData = this.state.data;
@@ -77,16 +98,30 @@ class App extends Component {
       order = -1;
     }
 
-    filterData.sort((a, b) => {
-      if (
-        a[this.state.orderBy].toLowerCase() <
-        b[this.state.orderBy].toLowerCase()
-      ) {
-        return 1 * order;
-      } else {
-        return -1 * order;
-      }
-    });
+    filterData = filterData
+      .sort((a, b) => {
+        if (
+          a[this.state.orderBy].toLowerCase() <
+          b[this.state.orderBy].toLowerCase()
+        ) {
+          return 1 * order;
+        } else {
+          return -1 * order;
+        }
+      })
+      .filter((item) => {
+        return (
+          item["petName"]
+            .toLowerCase()
+            .includes(this.state.query.toLowerCase()) ||
+          item["ownerName"]
+            .toLowerCase()
+            .includes(this.state.query.toLowerCase()) ||
+          item["aptNotes"]
+            .toLowerCase()
+            .includes(this.state.query.toLowerCase())
+        );
+      });
 
     return (
       <main className="page bg-white" id="petratings">
@@ -104,11 +139,13 @@ class App extends Component {
                   orderBy={this.state.orderBy}
                   orderDir={this.state.orderDir}
                   changeOrder={this.changeOrder}
+                  searchRecord={this.searchRecord}
                 />
 
                 <ListAppointments
                   data={filterData}
                   deleteData={this.deleteItem}
+                  updateInfo={this.updateInfo}
                 />
               </div>
             </div>

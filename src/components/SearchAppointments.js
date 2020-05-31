@@ -10,6 +10,7 @@ class SearchAppointments extends Component {
               id="SearchApts"
               type="text"
               className="form-control"
+              onChange={(e) => this.props.searchRecord(e.target.value)}
               aria-label="Search Appointments"
             />
             <div className="input-group-append">
